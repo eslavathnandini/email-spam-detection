@@ -141,20 +141,6 @@ print("SPAM" if prediction == 1 else "HAM")
 3. **Model Selection:** Comparing multiple classifiers
 4. **Imbalanced Data:** Handling class imbalance in spam detection
 
-## 🎓 Interview Questions
-
-1. **How does TF-IDF work?**
-   - TF-IDF weighs words by their frequency in a document vs. across all documents
-
-2. **Why Naive Bayes for spam detection?**
-   - Works well with text data, fast training, good baseline
-
-3. **How to handle imbalanced data?**
-   - SMOTE, undersampling, class weights
-
-4. **What features did you engineer?**
-   - TF-IDF, message length, word count, uppercase count
-
 ## 📚 Resources
 
 - [SMS Spam Collection Dataset](https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset)
