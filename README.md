@@ -1,6 +1,6 @@
 # Email Spam Classifier
 
-A machine learning-based email/SMS spam classifier that detects spam messages with ~97% accuracy.
+A machine learning-based email/SMS spam classifier that detects spam messages with **98.21% accuracy**.
 
 ## 📋 Project Overview
 
@@ -13,22 +13,21 @@ This project implements a spam detection system using Natural Language Processin
 **Dataset:** SMS Spam Collection Dataset (5,572 messages)
 - Source: UCI Machine Learning Repository / Kaggle
 - Features: Label (spam/ham), Message text
-- Distribution: 747 spam, 4825 ham
+- Distribution: 4,825 ham, 747 spam
 
 ## 🛠️ Tech Stack
 
 - **Languages:** Python
-- **Libraries:** Pandas, NumPy, Scikit-learn, NLTK, XGBoost
+- **Libraries:** Pandas, NumPy, Scikit-learn, XGBoost
 - **Visualization:** Matplotlib, Seaborn, WordCloud
 - **Deployment:** Streamlit
 
 ## 📁 Project Structure
 
 ```
-email-spam-classifier/
+email-spam-detection/
 ├── data/
-│   ├── spam.csv                    # Raw dataset
-│   └── preprocessed_spam.csv       # Preprocessed data
+│   └── spam.csv                    # Dataset (5,572 messages)
 ├── notebooks/
 │   ├── 01_EDA_and_Preprocessing.ipynb
 │   └── 02_Modeling.ipynb
@@ -38,53 +37,91 @@ email-spam-classifier/
 │   └── model_training.py           # Model training
 ├── models/
 │   └── spam_classifier.pkl         # Trained model
-├── outputs/                        # Output files
-├── app.py                          # Streamlit app
+├── run.py                          # Training script
+├── app.py                          # Streamlit web app
 ├── requirements.txt                # Dependencies
 └── README.md                       # Project documentation
 ```
 
 ## 🚀 Installation
 
-1. Clone the repository:
+### Step 1: Clone the repository
 ```bash
-git clone https://github.com/yourusername/email-spam-classifier.git
-cd email-spam-classifier
+git clone https://github.com/eslavathnandini/email-spam-detection.git
+cd email-spam-detection
 ```
 
-2. Install dependencies:
+### Step 2: Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Download NLTK data:
-```python
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
-```
-
-## 📊 Usage
-
-### 1. Run Jupyter Notebooks
-
+### Step 3: Run training script
 ```bash
-# EDA and Preprocessing
-jupyter notebook notebooks/01_EDA_and_Preprocessing.ipynb
-
-# Model Training
-jupyter notebook notebooks/02_Modeling.ipynb
+python run.py
 ```
 
-### 2. Run Streamlit App
-
+### Step 4: Run Streamlit app
 ```bash
 streamlit run app.py
 ```
 
-### 3. Use as Python Module
+## 📊 Results (Actual)
 
+| Model | Accuracy | Precision | Recall | F1-Score |
+|-------|----------|-----------|--------|----------|
+| Naive Bayes | 96.23% | 100.0% | 71.81% | 83.59% |
+| **SVM** | **98.21%** | **98.5%** | **87.92%** | **92.91%** |
+| Random Forest | 96.95% | 100.0% | 77.18% | 87.12% |
+| Logistic Regression | 97.4% | 100.0% | 80.54% | 89.22% |
+| XGBoost | 97.4% | 96.88% | 83.22% | 89.53% |
+
+**🏆 Best Model:** SVM with 98.21% accuracy and 92.91% F1-score
+
+## 🔧 Features
+
+### Text Preprocessing
+- Lowercase conversion
+- Special character removal
+- Stopword removal
+- Text normalization
+
+### Feature Engineering
+- TF-IDF Vectorization (5,000 max features)
+- Text statistics (length, word count, etc.)
+
+### Models Implemented
+- Multinomial Naive Bayes
+- Support Vector Machine (SVM) ✅ Best
+- Random Forest
+- Logistic Regression
+- XGBoost
+
+## 💻 Usage
+
+### 1. Run Training Script
+```bash
+python run.py
+```
+
+This will:
+- Load the dataset
+- Preprocess text
+- Train 5 ML models
+- Display accuracy results
+- Save the best model
+
+### 2. Run Streamlit App
+```bash
+streamlit run app.py
+```
+
+This will:
+- Open web browser
+- Show spam classifier interface
+- Allow real-time predictions
+
+### 3. Use as Python Module
 ```python
 from src.text_preprocessing import TextPreprocessor
 from src.feature_engineering import FeatureEngineer
@@ -104,36 +141,6 @@ prediction = model.predict(features)[0]
 print("SPAM" if prediction == 1 else "HAM")
 ```
 
-## 📈 Results
-
-| Model | Accuracy | Precision | Recall | F1-Score |
-|-------|----------|-----------|--------|----------|
-| Naive Bayes | 97.2% | 97.1% | 97.2% | 97.1% |
-| SVM | 97.8% | 97.7% | 97.8% | 97.7% |
-| XGBoost | 97.5% | 97.4% | 97.5% | 97.4% |
-
-**Best Model:** SVM with 97.8% accuracy
-
-## 🔧 Features
-
-### Text Preprocessing
-- Lowercase conversion
-- Special character removal
-- Stopword removal
-- Stemming/Lemmatization
-
-### Feature Engineering
-- TF-IDF Vectorization
-- Bag of Words
-- Text statistics (length, word count, etc.)
-
-### Models Implemented
-- Multinomial Naive Bayes
-- Support Vector Machine (SVM)
-- Random Forest
-- Logistic Regression
-- XGBoost
-
 ## 📝 Key Learnings
 
 1. **Text Preprocessing:** Importance of cleaning text data for ML
@@ -145,7 +152,7 @@ print("SPAM" if prediction == 1 else "HAM")
 
 - [SMS Spam Collection Dataset](https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset)
 - [Scikit-learn Documentation](https://scikit-learn.org/)
-- [NLTK Documentation](https://www.nltk.org/)
+- [Streamlit Documentation](https://streamlit.io/)
 
 ## 👥 Contributing
 
