@@ -11,7 +11,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from xgboost import XGBClassifier
 import joblib
 import os
@@ -25,27 +25,27 @@ def main():
     
     # Check if dataset exists
     if not os.path.exists('data/spam.csv'):
-        print("\n❌ ERROR: Dataset not found!")
+        print("\nERROR: Dataset not found!")
         print("Please download spam.csv from:")
         print("https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset")
         print("And place it in the data/ folder")
         return
     
     # Load dataset
-    print("\n📊 Loading dataset...")
+    print("\nLoading dataset...")
     df = pd.read_csv('data/spam.csv')
     print(f"Dataset shape: {df.shape}")
     print(f"\nLabel distribution:")
     print(df['label'].value_counts())
     
     # Preprocess text
-    print("\n🔧 Preprocessing text...")
+    print("\nPreprocessing text...")
     preprocessor = TextPreprocessor()
     df['cleaned'] = df['message'].apply(preprocessor.preprocess)
     df['label_encoded'] = df['label'].map({'ham': 0, 'spam': 1})
     
     # Split data
-    print("\n✂️ Splitting data...")
+    print("\nSplitting data...")
     X_train, X_test, y_train, y_test = train_test_split(
         df['cleaned'], df['label_encoded'], test_size=0.2, random_state=42, stratify=df['label_encoded']
     )
@@ -53,13 +53,13 @@ def main():
     print(f"Test set size: {X_test.shape[0]}")
     
     # TF-IDF
-    print("\n📝 Applying TF-IDF vectorization...")
+    print("\nApplying TF-IDF vectorization...")
     tfidf = TfidfVectorizer(max_features=5000)
     X_train_tfidf = tfidf.fit_transform(X_train)
     X_test_tfidf = tfidf.transform(X_test)
     
     # Train models
-    print("\n🤖 Training models...")
+    print("\nTraining models...")
     models = {
         'Naive Bayes': MultinomialNB(),
         'SVM': SVC(kernel='linear', probability=True),
@@ -105,14 +105,16 @@ def main():
     best_model_name = results_df.loc[best_idx, 'Model']
     
     print("\n" + "="*70)
-    print(f"🏆 BEST MODEL: {best_model_name}")
+    print(f"BEST MODEL: {best_model_name}")
     print("="*70)
     
-    # Save best model
-    print("\n💾 Saving best model...")
+    # Save best model and TF-IDF
+    print("\nSaving model and TF-IDF vectorizer...")
     os.makedirs('models', exist_ok=True)
     joblib.dump(models[best_model_name], 'models/spam_classifier.pkl')
+    joblib.dump(tfidf, 'models/tfidf.pkl')
     print("Model saved to models/spam_classifier.pkl")
+    print("TF-IDF saved to models/tfidf.pkl")
     
     # Test with sample messages
     print("\n" + "="*70)
@@ -138,7 +140,7 @@ def main():
         print(f"Confidence: {max(probability)*100:.2f}%")
         print("-" * 50)
     
-    print("\n✅ Training complete!")
+    print("\nTraining complete!")
     print("Run 'streamlit run app.py' to start the web app")
 
 
