@@ -2,28 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
-import sys
 from src.text_preprocessing import TextPreprocessor
-from src.feature_engineering import FeatureEngineer
 
 # Load model and components
 @st.cache_resource
 def load_model():
     model = joblib.load('models/spam_classifier.pkl')
+    tfidf = joblib.load('models/tfidf.pkl')
     preprocessor = TextPreprocessor()
-    return model, preprocessor
-
-# Load and fit feature engineer on training data
-@st.cache_resource
-def load_feature_engineer():
-    # Load raw data and preprocess
-    df = pd.read_csv('data/spam.csv')
-    preprocessor = TextPreprocessor()
-    df['cleaned'] = df['message'].apply(preprocessor.preprocess)
-    
-    feature_engineer = FeatureEngineer(method='tfidf', max_features=5000)
-    feature_engineer.fit_transform(df['cleaned'])
-    return feature_engineer
+    return model, tfidf, preprocessor
 
 def main():
     st.set_page_config(
@@ -36,8 +23,7 @@ def main():
     st.markdown("---")
     
     # Load components
-    model, preprocessor = load_model()
-    feature_engineer = load_feature_engineer()
+    model, tfidf, preprocessor = load_model()
     
     # Sidebar
     st.sidebar.header("About")
@@ -81,8 +67,8 @@ def main():
             # Preprocess
             cleaned_text = preprocessor.preprocess(user_input)
             
-            # Feature extraction
-            features = feature_engineer.transform([cleaned_text])
+            # Feature extraction using loaded TF-IDF
+            features = tfidf.transform([cleaned_text])
             
             # Predict
             prediction = model.predict(features)[0]
@@ -117,8 +103,8 @@ def main():
             # Preprocess
             batch_df['cleaned'] = batch_df['message'].apply(preprocessor.preprocess)
             
-            # Feature extraction
-            features = feature_engineer.transform(batch_df['cleaned'])
+            # Feature extraction using loaded TF-IDF
+            features = tfidf.transform(batch_df['cleaned'])
             
             # Predict
             batch_df['prediction'] = model.predict(features)
