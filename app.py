@@ -11,15 +11,18 @@ from src.feature_engineering import FeatureEngineer
 def load_model():
     model = joblib.load('models/spam_classifier.pkl')
     preprocessor = TextPreprocessor()
-    feature_engineer = FeatureEngineer(method='tfidf', max_features=5000)
-    return model, preprocessor, feature_engineer
+    return model, preprocessor
 
 # Load and fit feature engineer on training data
 @st.cache_resource
 def load_feature_engineer():
-    df = pd.read_csv('data/preprocessed_spam.csv')
+    # Load raw data and preprocess
+    df = pd.read_csv('data/spam.csv')
+    preprocessor = TextPreprocessor()
+    df['cleaned'] = df['message'].apply(preprocessor.preprocess)
+    
     feature_engineer = FeatureEngineer(method='tfidf', max_features=5000)
-    feature_engineer.fit_transform(df['cleaned_message'])
+    feature_engineer.fit_transform(df['cleaned'])
     return feature_engineer
 
 def main():
@@ -33,7 +36,7 @@ def main():
     st.markdown("---")
     
     # Load components
-    model, preprocessor, _ = load_model()
+    model, preprocessor = load_model()
     feature_engineer = load_feature_engineer()
     
     # Sidebar
@@ -42,8 +45,8 @@ def main():
         "This app classifies emails/SMS as spam or ham (not spam) "
         "using machine learning.\n\n"
         "**Dataset:** SMS Spam Collection\n"
-        "**Model:** XGBoost/Naive Bayes/SVM\n"
-        "**Accuracy:** ~97%"
+        "**Model:** SVM\n"
+        "**Accuracy:** 98.21%"
     )
     
     # Main content
@@ -112,10 +115,10 @@ def main():
         
         if 'message' in batch_df.columns:
             # Preprocess
-            batch_df['cleaned_message'] = batch_df['message'].apply(preprocessor.preprocess)
+            batch_df['cleaned'] = batch_df['message'].apply(preprocessor.preprocess)
             
             # Feature extraction
-            features = feature_engineer.transform(batch_df['cleaned_message'])
+            features = feature_engineer.transform(batch_df['cleaned'])
             
             # Predict
             batch_df['prediction'] = model.predict(features)
